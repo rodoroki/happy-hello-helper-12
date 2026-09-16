@@ -43,28 +43,24 @@ export function interpretarIntencao(texto: string): Intencao {
   const cidade = CIDADES.find((c) => t.includes(normalizar(c)))
     ?? (/\bbc\b|camboriu/.test(t) ? "Balneário Camboriú" : undefined);
 
-  const suitesMatch = t.match(/(\d+)\s*(suite|suites|su[íi]tes)/);
-  const dormMatch = t.match(/(\d+)\s*(dorm|quarto)/);
-  const vagasMatch = t.match(/(\d+)\s*vaga/);
+  const suites = t.match(/(\d+)\s*(suite|suites|su[íi]tes)/)?.[1]
+    ?? t.match(/(\d+)\s*(dorm|quarto)/)?.[1];
+  const vagas = t.match(/(\d+)\s*vaga/)?.[1];
+  const tipo = extrairTipo(t);
+  const orcamentoMax = extrairOrcamento(t);
 
   return {
     demandaId: `dem_${Date.now().toString(36)}`,
     texto: texto.trim(),
     ...(cidade ? { cidade } : {}),
-    ...(extrairTipo(t) ? { tipo: extrairTipo(t) } : {}),
+    ...(tipo ? { tipo } : {}),
     ...(/(frente\s*-?\s*mar|frente ao mar|pe na areia|vista mar)/.test(t)
       ? { frenteMar: true }
       : {}),
-    ...(suitesMatch
-      ? { suites: Number(suitesMatch[1]) }
-      : dormMatch
-        ? { suites: Number(dormMatch[1]) }
-        : {}),
-    ...(vagasMatch ? { vagas: Number(vagasMatch[1]) } : {}),
+    ...(suites ? { suites: Number(suites) } : {}),
+    ...(vagas ? { vagas: Number(vagas) } : {}),
     ...(/(pronto|entregue|mudar|morar ja|imediat)/.test(t) ? { pronto: true } : {}),
-    ...(extrairOrcamento(t) !== undefined
-      ? { orcamentoMax: extrairOrcamento(t) }
-      : {}),
+    ...(orcamentoMax !== undefined ? { orcamentoMax } : {}),
   };
 }
 
