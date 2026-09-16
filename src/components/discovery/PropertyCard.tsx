@@ -25,7 +25,11 @@ export function PropertyCard({ match, consulta }: { match: Match; consulta: stri
             className="aspect-[16/10] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.02]"
           />
           <span className="absolute top-4 left-4 rounded-full bg-background/85 px-3 py-1 text-[11px] tracking-wide text-foreground backdrop-blur-sm">
-            {exato ? "Corresponde ao que você descreveu" : "Muito próximo do que você procura"}
+            {exato
+              ? "Corresponde ao que você descreveu"
+              : match.score >= 55
+                ? "Muito próximo do que você procura"
+                : "O mais próximo que encontrei"}
           </span>
         </div>
       </Link>
