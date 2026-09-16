@@ -132,9 +132,15 @@ function Busca() {
 
           {resultado.modo === "flexibilizado" ? (
             <div className="mt-7 rounded-xl border border-caution/30 bg-caution-soft/60 p-5 text-sm leading-relaxed">
-              <p className="text-foreground">
-                Mantivemos {resultado.mantidos.slice(0, 3).join(", ")}.
-              </p>
+              {resultado.mantidos.length > 0 ? (
+                <p className="text-foreground">
+                  Mantivemos {resultado.mantidos.slice(0, 3).join(", ")}.
+                </p>
+              ) : (
+                <p className="text-foreground">
+                  Nenhum critério pôde ser mantido por completo.
+                </p>
+              )}
               <p className="mt-1 text-muted-foreground">
                 Flexibilizamos {resultado.flexibilizados.slice(0, 3).join(", ").toLowerCase()}.
               </p>
