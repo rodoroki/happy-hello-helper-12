@@ -130,23 +130,25 @@ export function buscar(intencao: Intencao): ResultadoBusca {
   );
 
   const exatos = todos.filter((m) => m.exato);
-  if (exatos.length > 0) {
+  const primeiroExato = exatos[0];
+  if (primeiroExato) {
     const proximos = todos.filter((m) => !m.exato && m.score >= 70).slice(0, 2);
     return {
       intencao,
       modo: "exato",
       matches: [...exatos.slice(0, 3), ...proximos],
-      mantidos: exatos[0].criterios.map((c) => c.rotulo),
+      mantidos: primeiroExato.criterios.map((c) => c.rotulo),
       flexibilizados: [],
     };
   }
 
   const aproximados = todos.filter((m) => m.score >= 55).slice(0, 4);
-  if (aproximados.length > 0) {
+  const melhor = aproximados[0];
+  if (melhor) {
     const flexibilizados = Array.from(
       new Set(aproximados.flatMap((m) => m.divergencias.map((d) => d.rotulo))),
     );
-    const mantidos = aproximados[0].criterios
+    const mantidos = melhor.criterios
       .filter((c) => c.status === "atende")
       .map((c) => c.rotulo);
     return { intencao, modo: "flexibilizado", matches: aproximados, mantidos, flexibilizados };
