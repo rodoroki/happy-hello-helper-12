@@ -58,7 +58,9 @@ export function PropertyCard({ match, consulta }: { match: Match; consulta: stri
         </div>
 
         <div className="rounded-xl border border-border bg-surface/60 p-5">
-          <p className="text-eyebrow">Por que combina com sua busca</p>
+          <p className="text-eyebrow">
+            {match.score >= 55 ? "Por que combina com sua busca" : "Onde difere do seu pedido"}
+          </p>
           <ul className="mt-3 space-y-2">
             {criterios.slice(0, 5).map((criterio) => (
               <CriterioLinha key={criterio.chave} criterio={criterio} />
