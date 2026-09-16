@@ -16,14 +16,12 @@ function normalizar(texto: string) {
 }
 
 function extrairOrcamento(t: string): number | undefined {
-  const milhoes = t.match(/(\d+[.,]?\d*)\s*(mi\b|milhao|milhoes|mm)/);
-  if (milhoes) {
-    return Math.round(parseFloat(milhoes[1].replace(",", ".")) * 1_000_000);
-  }
-  const mil = t.match(/(\d+[.,]?\d*)\s*mil\b/);
-  if (mil) return Math.round(parseFloat(mil[1].replace(",", ".")) * 1_000);
-  const cru = t.match(/r\$\s*([\d.]{4,})/);
-  if (cru) return parseInt(cru[1].replace(/\./g, ""), 10);
+  const milhoes = t.match(/(\d+[.,]?\d*)\s*(mi\b|milhao|milhoes|mm)/)?.[1];
+  if (milhoes) return Math.round(parseFloat(milhoes.replace(",", ".")) * 1_000_000);
+  const mil = t.match(/(\d+[.,]?\d*)\s*mil\b/)?.[1];
+  if (mil) return Math.round(parseFloat(mil.replace(",", ".")) * 1_000);
+  const cru = t.match(/r\$\s*([\d.]{4,})/)?.[1];
+  if (cru) return parseInt(cru.replace(/\./g, ""), 10);
   return undefined;
 }
 
