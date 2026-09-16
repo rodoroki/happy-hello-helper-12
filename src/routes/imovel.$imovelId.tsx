@@ -184,9 +184,15 @@ function PaginaImovel() {
               <p className="text-eyebrow">Origem da informação</p>
               <p className="mt-2 text-sm text-foreground">{imovel.origem.nome}</p>
               <div className="mt-4 flex flex-wrap gap-2">
-                {imovel.confianca.preco ? <ConfiancaTag nivel={imovel.confianca.preco} /> : null}
-                {imovel.confianca.area ? <ConfiancaTag nivel={imovel.confianca.area} /> : null}
-                {imovel.confianca.entrega ? <ConfiancaTag nivel={imovel.confianca.entrega} /> : null}
+                {imovel.confianca.preco ? (
+                  <ConfiancaTag campo="Preço" nivel={imovel.confianca.preco} />
+                ) : null}
+                {imovel.confianca.area ? (
+                  <ConfiancaTag campo="Área" nivel={imovel.confianca.area} />
+                ) : null}
+                {imovel.confianca.entrega ? (
+                  <ConfiancaTag campo="Entrega" nivel={imovel.confianca.entrega} />
+                ) : null}
               </div>
               <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
                 Imóvel de demonstração. Nenhum dado real foi inventado nesta versão conceitual.
