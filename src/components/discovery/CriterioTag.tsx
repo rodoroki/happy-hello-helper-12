@@ -46,7 +46,7 @@ const CONFIANCA_ROTULO: Record<Confianca, string> = {
   desatualizado: "Pode estar desatualizado",
 };
 
-export function ConfiancaTag({ nivel }: { nivel: Confianca }) {
+export function ConfiancaTag({ campo, nivel }: { campo: string; nivel: Confianca }) {
   const estilo =
     nivel === "confirmado"
       ? "border-affirm/30 text-affirm"
@@ -56,7 +56,7 @@ export function ConfiancaTag({ nivel }: { nivel: Confianca }) {
 
   return (
     <span className={`rounded-full border px-2.5 py-1 text-[11px] ${estilo}`}>
-      {CONFIANCA_ROTULO[nivel]}
+      {campo}: {CONFIANCA_ROTULO[nivel].toLowerCase()}
     </span>
   );
 }

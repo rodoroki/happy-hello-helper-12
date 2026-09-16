@@ -142,7 +142,10 @@ export function buscar(intencao: Intencao): ResultadoBusca {
     };
   }
 
-  const aproximados = todos.filter((m) => m.score >= 55).slice(0, 4);
+  // Nunca respondemos apenas "nada encontrado": mostramos o mais próximo
+  // e dizemos com clareza o que foi flexibilizado.
+  const relevantes = todos.filter((m) => m.score >= 55).slice(0, 4);
+  const aproximados = relevantes.length > 0 ? relevantes : todos.slice(0, 2);
   const melhor = aproximados[0];
   if (melhor) {
     const flexibilizados = Array.from(
