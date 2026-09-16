@@ -1,7 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 
+import { ComoFunciona } from "@/components/discovery/ComoFunciona";
 import { IntentField } from "@/components/discovery/IntentField";
 import { SiteFooter, SiteHeader } from "@/components/discovery/SiteHeader";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -38,8 +40,8 @@ function Home() {
             <span className="block text-muted-foreground">A gente encontra o que faz sentido.</span>
           </h1>
           <p className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground">
-            Sem dezenas de filtros. Escreva sua intenção em uma frase — nós interpretamos,
-            procuramos e explicamos por que cada imóvel apareceu.
+            Você não precisa saber como procurar. Escreva do seu jeito — nós entendemos o que
+            você procura e encontramos o que faz sentido.
           </p>
         </div>
 
@@ -47,10 +49,10 @@ function Home() {
           <IntentField />
         </div>
 
-        <p className="mt-12 max-w-lg text-sm leading-relaxed text-muted-foreground">
-          Mostramos poucos imóveis, não centenas. E quando algo não corresponde exatamente
-          ao seu pedido, dizemos com clareza o que ficou diferente.
-        </p>
+        <div className="mt-10 sm:mt-12">
+          <ComoFunciona />
+        </div>
+
       </main>
 
       <SiteFooter />

@@ -121,7 +121,7 @@ function Busca() {
 
           {criterios.length > 0 ? (
             <div className="mt-7">
-              <p className="text-eyebrow">Como interpretei seu pedido</p>
+              <p className="text-eyebrow">Entendi que você procura</p>
               <div className="mt-3 flex flex-wrap gap-2">
                 {criterios.map((criterio) => (
                   <IntencaoTag key={criterio}>{criterio}</IntencaoTag>
