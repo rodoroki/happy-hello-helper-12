@@ -51,10 +51,11 @@ export function IntentField({ valorInicial = "" }: { valorInicial?: string }) {
         />
 
         <div className="flex items-center justify-between gap-3 border-t border-border/70 px-4 py-3 sm:px-5">
-          <span className="hidden items-center gap-2 text-xs text-muted-foreground sm:flex">
+          <span className="flex items-center gap-2 text-xs text-muted-foreground">
             <AudioLines className="h-4 w-4 text-accent/70" aria-hidden />
             Escreva como você falaria
           </span>
+
           <button
             type="submit"
             className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-all hover:gap-3 hover:bg-primary/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
