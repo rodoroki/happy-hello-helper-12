@@ -64,21 +64,29 @@ export function interpretarIntencao(texto: string): Intencao {
   };
 }
 
+/** Formatação determinística (idêntica no servidor e no navegador). */
+function agruparMilhares(valor: number) {
+  return String(Math.round(valor)).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+
 export function formatarMoeda(valor: number) {
-  return valor.toLocaleString("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-    maximumFractionDigits: valor >= 1_000_000 ? 1 : 0,
-    notation: valor >= 1_000_000 ? "compact" : "standard",
-  });
+  if (valor >= 1_000_000) {
+    const milhoes = valor / 1_000_000;
+    const texto = Number.isInteger(milhoes)
+      ? String(milhoes)
+      : milhoes.toFixed(1).replace(".", ",");
+    return `R$ ${texto} mi`;
+  }
+  if (valor >= 1_000) {
+    const mil = valor / 1_000;
+    const texto = Number.isInteger(mil) ? String(mil) : mil.toFixed(0);
+    return `R$ ${texto} mil`;
+  }
+  return `R$ ${agruparMilhares(valor)}`;
 }
 
 export function formatarPrecoCheio(valor: number) {
-  return valor.toLocaleString("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-    maximumFractionDigits: 0,
-  });
+  return `R$ ${agruparMilhares(valor)}`;
 }
 
 /** Lista legível dos critérios interpretados, para a apresentação. */
