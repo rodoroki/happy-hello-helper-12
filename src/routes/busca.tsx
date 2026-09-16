@@ -107,7 +107,9 @@ function Busca() {
       <main className="mx-auto w-full max-w-5xl flex-1 px-6 pb-10">
         <section className="fade-in-soft max-w-2xl pt-6">
           <p className="text-eyebrow">
-            {resultado.modo === "vazio" ? "Não encontrei exatamente isso" : "Entendi o que você procura"}
+            {resultado.modo === "exato"
+              ? "Entendi o que você procura"
+              : "Não encontrei exatamente isso"}
           </p>
           <h1 className="mt-4 text-3xl leading-snug sm:text-4xl">
             {resultado.modo === "exato"
