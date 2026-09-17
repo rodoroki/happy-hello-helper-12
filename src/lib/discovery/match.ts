@@ -53,6 +53,38 @@ function avaliar(imovel: Imovel, intencao: Intencao): CriterioAvaliado[] {
     });
   }
 
+  if (intencao.pertoDoMar) {
+    criterios.push({
+      chave: "pertoDoMar",
+      rotulo: "Perto do mar",
+      status: imovel.frenteMar || imovel.quadraMar ? "atende" : "nao_atende",
+      ...(imovel.frenteMar || imovel.quadraMar
+        ? { observacao: imovel.distanciaMar }
+        : { observacao: "Longe da orla" }),
+    });
+  }
+
+  if (intencao.areaMin) {
+    const area = imovel.areaPrivativa;
+    criterios.push({
+      chave: "area",
+      rotulo: `Imóvel espaçoso, a partir de ${intencao.areaMin} m²`,
+      status:
+        area === null
+          ? "parcial"
+          : area >= intencao.areaMin
+            ? "atende"
+            : area >= intencao.areaMin * 0.85
+              ? "parcial"
+              : "nao_atende",
+      ...(area === null
+        ? { observacao: "Área não informada" }
+        : area < intencao.areaMin
+          ? { observacao: `${area} m² privativos` }
+          : {}),
+    });
+  }
+
   if (intencao.suites) {
     const diff = imovel.suites - intencao.suites;
     criterios.push({

@@ -4,8 +4,15 @@ import { CriterioLinha } from "./CriterioTag";
 import { formatarPrecoCheio } from "@/lib/discovery/interpret";
 import type { Match } from "@/lib/discovery/types";
 
+function tituloDivergencias(quantidade: number) {
+  if (quantidade === 1) return "Uma diferença";
+  if (quantidade === 2) return "Duas diferenças";
+  return `${quantidade} diferenças`;
+}
+
 export function PropertyCard({ match, consulta }: { match: Match; consulta: string }) {
   const { imovel, criterios, divergencias, exato } = match;
+  const atendidos = criterios.filter((c) => c.status === "atende");
 
   return (
     <article className="rise-in group overflow-hidden">
@@ -25,11 +32,7 @@ export function PropertyCard({ match, consulta }: { match: Match; consulta: stri
             className="aspect-[16/10] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.02]"
           />
           <span className="absolute top-4 left-4 rounded-full bg-background/85 px-3 py-1 text-[11px] tracking-wide text-foreground backdrop-blur-sm">
-            {exato
-              ? "Corresponde ao que você descreveu"
-              : match.score >= 55
-                ? "Muito próximo do que você procura"
-                : "O mais próximo que encontrei"}
+            {exato ? "Atende ao que você descreveu" : "Próximo do que você descreveu"}
           </span>
         </div>
       </Link>
@@ -58,18 +61,29 @@ export function PropertyCard({ match, consulta }: { match: Match; consulta: stri
         </div>
 
         <div className="rounded-xl border border-border bg-surface/60 p-5">
-          <p className="text-eyebrow">
-            {match.score >= 55 ? "Por que combina com sua busca" : "Onde difere do seu pedido"}
-          </p>
-          <ul className="mt-3 space-y-2">
-            {criterios.slice(0, 5).map((criterio) => (
-              <CriterioLinha key={criterio.chave} criterio={criterio} />
-            ))}
-          </ul>
-          {divergencias.length > 0 ? (
-            <p className="mt-4 text-xs text-muted-foreground">
-              Mostramos a divergência em vez de esconder.
+          <p className="text-eyebrow">Por que este imóvel apareceu?</p>
+
+          {atendidos.length > 0 ? (
+            <ul className="mt-3 space-y-2">
+              {atendidos.slice(0, 5).map((criterio) => (
+                <CriterioLinha key={criterio.chave} criterio={criterio} />
+              ))}
+            </ul>
+          ) : (
+            <p className="mt-3 text-sm text-muted-foreground">
+              É o imóvel mais próximo do conjunto que você descreveu.
             </p>
+          )}
+
+          {divergencias.length > 0 ? (
+            <div className="mt-5 border-t border-border/70 pt-4">
+              <p className="text-sm text-foreground">{tituloDivergencias(divergencias.length)}</p>
+              <ul className="mt-2 space-y-2">
+                {divergencias.map((criterio) => (
+                  <CriterioLinha key={criterio.chave} criterio={criterio} />
+                ))}
+              </ul>
+            </div>
           ) : null}
         </div>
       </div>
