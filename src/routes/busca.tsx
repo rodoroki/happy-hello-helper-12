@@ -4,8 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { IntentField } from "@/components/discovery/IntentField";
 import { PropertyCard } from "@/components/discovery/PropertyCard";
 import { SiteFooter, SiteHeader } from "@/components/discovery/SiteHeader";
-import { formatarMoeda, leituraDaIntencao } from "@/lib/discovery/interpret";
-import { interpretarIntencao } from "@/lib/discovery/interpret";
+import { formatarMoeda, interpretarIntencao, leituraDaIntencao } from "@/lib/discovery/interpret";
 import { buscar } from "@/lib/discovery/match";
 import type { Intencao } from "@/lib/discovery/types";
 
