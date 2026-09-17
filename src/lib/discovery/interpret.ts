@@ -126,9 +126,48 @@ export function criteriosDaIntencao(intencao: Intencao): string[] {
     );
   }
   if (intencao.frenteMar) itens.push("Frente-mar");
+  if (intencao.pertoDoMar) itens.push("Perto do mar");
   if (intencao.suites) itens.push(`${intencao.suites} suítes`);
   if (intencao.vagas) itens.push(`${intencao.vagas} vagas`);
+  if (intencao.areaMin) itens.push("Imóvel espaçoso");
   if (intencao.pronto) itens.push("Pronto para morar");
   if (intencao.orcamentoMax) itens.push(`Até ${formatarMoeda(intencao.orcamentoMax)}`);
+  return itens;
+}
+
+/**
+ * APRESENTAÇÃO da leitura: separa o que foi dito literalmente do que foi
+ * interpretado a partir do sentido da frase.
+ */
+export function leituraDaIntencao(intencao: Intencao): LeituraItem[] {
+  const inferidos = intencao.inferidos ?? [];
+  const item = (chave: string, rotulo: string): LeituraItem => ({
+    chave,
+    rotulo,
+    interpretado: inferidos.includes(chave),
+  });
+
+  const itens: LeituraItem[] = [];
+  if (intencao.tipo) {
+    itens.push(
+      item(
+        "tipo",
+        intencao.tipo === "apartamento"
+          ? "Apartamento"
+          : intencao.tipo === "cobertura"
+            ? "Cobertura"
+            : "Casa",
+      ),
+    );
+  }
+  if (intencao.frenteMar) itens.push(item("frenteMar", "Frente-mar"));
+  if (intencao.pertoDoMar) itens.push(item("pertoDoMar", "Região próxima ao mar"));
+  if (intencao.suites) itens.push(item("suites", `${intencao.suites} suítes`));
+  if (intencao.vagas) itens.push(item("vagas", `${intencao.vagas} vagas`));
+  if (intencao.areaMin) itens.push(item("area", `Imóvel espaçoso, a partir de ${intencao.areaMin} m²`));
+  if (intencao.pronto) itens.push(item("entrega", "Pronto para morar"));
+  if (intencao.uso) {
+    itens.push(item("uso", intencao.uso === "moradia" ? "Para morar" : "Para investir"));
+  }
   return itens;
 }
