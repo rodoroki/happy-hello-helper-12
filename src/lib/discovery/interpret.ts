@@ -1,4 +1,4 @@
-import type { Intencao, TipoImovel } from "./types";
+import type { Intencao, LeituraItem, TipoImovel } from "./types";
 
 const CIDADES = [
   "Balneário Camboriú",
@@ -39,6 +39,7 @@ function extrairTipo(t: string): TipoImovel | undefined {
  */
 export function interpretarIntencao(texto: string): Intencao {
   const t = normalizar(texto);
+  const inferidos: string[] = [];
 
   const cidade = CIDADES.find((c) => t.includes(normalizar(c)))
     ?? (/\bbc\b|camboriu/.test(t) ? "Balneário Camboriú" : undefined);
@@ -49,18 +50,40 @@ export function interpretarIntencao(texto: string): Intencao {
   const tipo = extrairTipo(t);
   const orcamentoMax = extrairOrcamento(t);
 
+  const frenteMar = /(frente\s*-?\s*mar|frente ao mar|pe na areia|vista mar)/.test(t);
+  const pertoDoMar =
+    !frenteMar && /(perto do mar|proximo ao mar|proximo do mar|beira mar|quadra do mar|perto da praia|proximo a praia)/.test(t);
+
+  // Sentido, não palavra-chave: "não precisa reformar" também quer dizer pronto.
+  const prontoLiteral = /(pronto|entregue|mudar|morar ja|imediat)/.test(t);
+  const prontoInferido = /(nao precis\w* reformar|sem reforma|nao reformar|reformado|sem obra)/.test(t);
+  if (!prontoLiteral && prontoInferido) inferidos.push("entrega");
+
+  const espacoso = /(bastante espaco|muito espaco|espacos\w*|amplo|ampla|bem grande|metragem grande)/.test(t);
+  if (espacoso) inferidos.push("area");
+  if (pertoDoMar) inferidos.push("pertoDoMar");
+
+  const uso = /(investi|alugar|locacao|renda|temporada)/.test(t)
+    ? ("investimento" as const)
+    : /(morar|moradia|familia|mudar|residir|para mim)/.test(t)
+      ? ("moradia" as const)
+      : undefined;
+  if (uso) inferidos.push("uso");
+
   return {
     demandaId: `dem_${Date.now().toString(36)}`,
     texto: texto.trim(),
     ...(cidade ? { cidade } : {}),
     ...(tipo ? { tipo } : {}),
-    ...(/(frente\s*-?\s*mar|frente ao mar|pe na areia|vista mar)/.test(t)
-      ? { frenteMar: true }
-      : {}),
+    ...(frenteMar ? { frenteMar: true } : {}),
+    ...(pertoDoMar ? { pertoDoMar: true } : {}),
     ...(suites ? { suites: Number(suites) } : {}),
     ...(vagas ? { vagas: Number(vagas) } : {}),
-    ...(/(pronto|entregue|mudar|morar ja|imediat)/.test(t) ? { pronto: true } : {}),
+    ...(prontoLiteral || prontoInferido ? { pronto: true } : {}),
+    ...(espacoso ? { areaMin: 160 } : {}),
+    ...(uso ? { uso } : {}),
     ...(orcamentoMax !== undefined ? { orcamentoMax } : {}),
+    ...(inferidos.length > 0 ? { inferidos } : {}),
   };
 }
 
