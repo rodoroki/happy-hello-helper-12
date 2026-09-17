@@ -34,10 +34,24 @@ export interface Intencao {
   cidade?: string;
   tipo?: TipoImovel;
   frenteMar?: boolean;
+  pertoDoMar?: boolean;
   suites?: number;
   vagas?: number;
   pronto?: boolean;
   orcamentoMax?: number;
+  /** Uso pretendido, quando a pessoa deixa isso claro em palavras. */
+  uso?: "moradia" | "investimento";
+  /** Área mínima interpretada de expressões como "bastante espaço". */
+  areaMin?: number;
+  /** Chaves que vieram de interpretação de sentido, não de menção literal. */
+  inferidos?: string[];
+}
+
+/** Um item da leitura apresentada ao usuário. */
+export interface LeituraItem {
+  chave: string;
+  rotulo: string;
+  interpretado: boolean;
 }
 
 export interface Imovel {
