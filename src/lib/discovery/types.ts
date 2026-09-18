@@ -10,10 +10,37 @@ export type DemandaId = string;
 export type ImovelId = string;
 export type MatchId = string;
 
-/** De onde a informação do imóvel veio. */
+/** Quem anunciou — nunca presumimos que seja o proprietário. */
+export type TipoAnunciante =
+  | "proprietario"
+  | "corretor"
+  | "imobiliaria"
+  | "construtora"
+  | "portal"
+  | "outro"
+  | "desconhecido";
+
+/**
+ * ORIGEM do anúncio. Só preenchemos o que pode ser identificado com
+ * confiança; o restante permanece ausente e aparece como "Não informado".
+ * Fonte do anúncio, responsável e proprietário são coisas distintas.
+ */
 export type Origem = {
   tipo: "anunciante" | "portal" | "demonstracao";
   nome: string;
+  anuncianteId?: string;
+  fonte?: string;
+  urlOriginal?: string;
+  idNaFonte?: string;
+  anunciante?: string;
+  tipoAnunciante?: TipoAnunciante;
+  imobiliaria?: string;
+  construtora?: string;
+  corretorResponsavel?: string;
+  proprietario?: string;
+  contatoDoAnunciante?: string;
+  dataDaColeta?: string;
+  dataDaAtualizacao?: string;
 };
 
 /** Camada de confiança da informação. */
