@@ -27,10 +27,14 @@ function normalizarWhatsapp(valor: string): string | null {
   return digitos;
 }
 
+/** Atendimento da plataforma, informado pelo responsável do projeto. */
+const WHATSAPP_ATENDIMENTO = "54999974989";
+
 function atendimentoDaPlataforma(): ContatoDoAnunciante | null {
   const bruto = import.meta.env["VITE_WHATSAPP_ATENDIMENTO"];
-  if (typeof bruto !== "string" || bruto.trim() === "") return null;
-  return { canal: "whatsapp", valor: bruto.trim() };
+  const valor = typeof bruto === "string" && bruto.trim() !== "" ? bruto.trim() : WHATSAPP_ATENDIMENTO;
+  if (valor === "") return null;
+  return { canal: "whatsapp", valor };
 }
 
 /** Mensagem inicial: curta, humana, sem cara de robô. */
