@@ -43,6 +43,8 @@ function sugestoesDeFolga(intencao: Intencao): string[] {
   if (intencao.cidade) sugestoes.push(`considerar outra cidade do litoral além de ${intencao.cidade}`);
   if (intencao.suites) sugestoes.push(`aceitar ${intencao.suites - 1} suítes`);
   if (intencao.frenteMar) sugestoes.push("aceitar a primeira quadra do mar, não só frente-mar");
+  if (intencao.espacoso) sugestoes.push("aceitar um imóvel um pouco menor");
+  if (intencao.areaMin) sugestoes.push(`aceitar área um pouco abaixo de ${intencao.areaMin} m²`);
   if (intencao.pronto) sugestoes.push("considerar imóveis em construção");
   return sugestoes;
 }
