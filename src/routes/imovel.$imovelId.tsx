@@ -49,6 +49,7 @@ function PaginaImovel() {
   const { q } = Route.useSearch();
   const [contatoAberto, setContatoAberto] = useState(false);
   const match = q ? matchDoImovel(interpretarIntencao(q), imovel) : null;
+  const destino = destinoDeContato(imovel);
 
   return (
     <div className="flex min-h-screen flex-col">
