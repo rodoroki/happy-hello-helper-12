@@ -1,8 +1,10 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { useState } from "react";
 
 import { ConfiancaTag, CriterioLinha } from "@/components/discovery/CriterioTag";
 import { SiteFooter, SiteHeader } from "@/components/discovery/SiteHeader";
 import { buscarImovel } from "@/lib/discovery/imoveis";
+import { registrarInteresse } from "@/lib/discovery/interesse";
 import { formatarPrecoCheio, interpretarIntencao } from "@/lib/discovery/interpret";
 import { matchDoImovel } from "@/lib/discovery/match";
 
@@ -44,6 +46,7 @@ export const Route = createFileRoute("/imovel/$imovelId")({
 function PaginaImovel() {
   const { imovel } = Route.useLoaderData();
   const { q } = Route.useSearch();
+  const [contatoAberto, setContatoAberto] = useState(false);
   const match = q ? matchDoImovel(interpretarIntencao(q), imovel) : null;
 
   return (
@@ -199,12 +202,33 @@ function PaginaImovel() {
               </p>
             </div>
 
-            <button
-              type="button"
-              className="mt-4 w-full rounded-full bg-primary px-5 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-            >
-              Falar sobre este imóvel
-            </button>
+            <div className="mt-4 rounded-2xl border border-border bg-card p-6">
+              <p className="text-base text-foreground">Gostou deste imóvel?</p>
+              <button
+                type="button"
+                onClick={() => {
+                  registrarInteresse({
+                    demandaId: match?.demandaId ?? "dem_sem_busca",
+                    imovelId: imovel.id,
+                    matchId: match?.matchId ?? null,
+                    origem: imovel.origem,
+                    dataHora: new Date().toISOString(),
+                    acao: "falar_sobre_imovel",
+                    contextoDaDemanda: q,
+                  });
+                  setContatoAberto(true);
+                }}
+                className="mt-4 w-full rounded-full bg-primary px-5 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+              >
+                Falar sobre este imóvel
+              </button>
+              {contatoAberto ? (
+                <p className="fade-in-soft mt-4 text-sm leading-relaxed text-muted-foreground">
+                  Guardamos o contexto da sua busca junto deste imóvel. Nesta versão conceitual
+                  ainda não há canal de atendimento ativo.
+                </p>
+              ) : null}
+            </div>
           </aside>
         </div>
       </main>

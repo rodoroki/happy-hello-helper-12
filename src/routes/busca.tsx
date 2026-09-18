@@ -43,6 +43,8 @@ function sugestoesDeFolga(intencao: Intencao): string[] {
   if (intencao.cidade) sugestoes.push(`considerar outra cidade do litoral além de ${intencao.cidade}`);
   if (intencao.suites) sugestoes.push(`aceitar ${intencao.suites - 1} suítes`);
   if (intencao.frenteMar) sugestoes.push("aceitar a primeira quadra do mar, não só frente-mar");
+  if (intencao.espacoso) sugestoes.push("aceitar um imóvel um pouco menor");
+  if (intencao.areaMin) sugestoes.push(`aceitar área um pouco abaixo de ${intencao.areaMin} m²`);
   if (intencao.pronto) sugestoes.push("considerar imóveis em construção");
   return sugestoes;
 }
@@ -56,6 +58,7 @@ function Busca() {
   const resultado = useMemo(() => buscar(interpretarIntencao(q)), [q]);
   const leitura = leituraDaIntencao(resultado.intencao);
   const interpretados = leitura.filter((item) => item.interpretado);
+  const ditos = leitura.filter((item) => !item.interpretado);
 
   useEffect(() => {
     setPronto(false);
@@ -142,15 +145,11 @@ function Busca() {
               </p>
             )}
 
-            {leitura.length > 0 ? (
-              <p className="mt-3 text-base leading-relaxed text-muted-foreground">
-                {leitura.map((item) => item.rotulo).join(" · ")}
-              </p>
-            ) : (
+            {leitura.length === 0 ? (
               <p className="mt-3 text-base leading-relaxed text-muted-foreground">
                 Sem restrições declaradas — leitura ampla do litoral.
               </p>
-            )}
+            ) : null}
 
             {resultado.intencao.orcamentoMax ? (
               <p className="mt-2 text-base text-foreground">
@@ -159,14 +158,29 @@ function Busca() {
             ) : null}
           </div>
 
-          {interpretados.length > 0 ? (
-            <div className="mt-7 border-t border-border pt-5">
-              <p className="text-eyebrow">O que entendemos do seu jeito de dizer</p>
-              <ul className="mt-3 space-y-1.5 text-sm text-muted-foreground">
-                {interpretados.map((item) => (
-                  <li key={item.chave}>{item.rotulo}</li>
-                ))}
-              </ul>
+          {leitura.length > 0 ? (
+            <div className="mt-7 grid gap-6 border-t border-border pt-5 sm:grid-cols-2">
+              {ditos.length > 0 ? (
+                <div>
+                  <p className="text-eyebrow">O que você disse</p>
+                  <ul className="mt-3 space-y-1.5 text-sm text-foreground">
+                    {ditos.map((item) => (
+                      <li key={item.chave}>{item.rotulo}</li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
+
+              {interpretados.length > 0 ? (
+                <div>
+                  <p className="text-eyebrow">O que entendemos</p>
+                  <ul className="mt-3 space-y-1.5 text-sm text-muted-foreground">
+                    {interpretados.map((item) => (
+                      <li key={item.chave}>{item.rotulo}</li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
             </div>
           ) : null}
 
@@ -233,8 +247,12 @@ function Busca() {
         ) : (
           <section className="mt-16 max-w-2xl border-t border-border pt-10">
             <h2 className="text-2xl leading-snug sm:text-3xl">
-              Ainda não encontramos exatamente o que você descreveu.
+              Não encontramos um imóvel que atenda a todos esses critérios ao mesmo tempo.
             </h2>
+            <p className="mt-5 text-base leading-relaxed text-muted-foreground">
+              Podemos procurar mantendo a localização e flexibilizando apenas um ponto — a
+              decisão é sua.
+            </p>
             {sugestoes.length > 0 ? (
               <>
                 <p className="mt-6 text-eyebrow">Talvez faça sentido flexibilizar</p>

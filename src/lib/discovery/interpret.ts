@@ -59,8 +59,15 @@ export function interpretarIntencao(texto: string): Intencao {
   const prontoInferido = /(nao precis\w* reformar|sem reforma|nao reformar|reformado|sem obra)/.test(t);
   if (!prontoLiteral && prontoInferido) inferidos.push("entrega");
 
+  /**
+   * Metragem só entra como número quando a pessoa informa o número.
+   * "Bastante espaço" é preferência, não especificação.
+   */
+  const areaDita = t.match(/(\d{2,4})\s*(m2|m²|metros|metros quadrados)/)?.[1];
+  const areaMin = areaDita ? Number(areaDita) : undefined;
+
   const espacoso = /(bastante espaco|muito espaco|espacos\w*|amplo|ampla|bem grande|metragem grande)/.test(t);
-  if (espacoso) inferidos.push("area");
+  if (espacoso) inferidos.push("espacoso");
   if (pertoDoMar) inferidos.push("pertoDoMar");
 
   const uso = /(investi|alugar|locacao|renda|temporada)/.test(t)
@@ -80,7 +87,8 @@ export function interpretarIntencao(texto: string): Intencao {
     ...(suites ? { suites: Number(suites) } : {}),
     ...(vagas ? { vagas: Number(vagas) } : {}),
     ...(prontoLiteral || prontoInferido ? { pronto: true } : {}),
-    ...(espacoso ? { areaMin: 160 } : {}),
+    ...(espacoso ? { espacoso: true } : {}),
+    ...(areaMin !== undefined ? { areaMin } : {}),
     ...(uso ? { uso } : {}),
     ...(orcamentoMax !== undefined ? { orcamentoMax } : {}),
     ...(inferidos.length > 0 ? { inferidos } : {}),
@@ -129,7 +137,8 @@ export function criteriosDaIntencao(intencao: Intencao): string[] {
   if (intencao.pertoDoMar) itens.push("Perto do mar");
   if (intencao.suites) itens.push(`${intencao.suites} suítes`);
   if (intencao.vagas) itens.push(`${intencao.vagas} vagas`);
-  if (intencao.areaMin) itens.push("Imóvel espaçoso");
+  if (intencao.espacoso) itens.push("Imóvel espaçoso");
+  if (intencao.areaMin) itens.push(`Área mínima de ${intencao.areaMin} m²`);
   if (intencao.pronto) itens.push("Pronto para morar");
   if (intencao.orcamentoMax) itens.push(`Até ${formatarMoeda(intencao.orcamentoMax)}`);
   return itens;
@@ -164,7 +173,8 @@ export function leituraDaIntencao(intencao: Intencao): LeituraItem[] {
   if (intencao.pertoDoMar) itens.push(item("pertoDoMar", "Região próxima ao mar"));
   if (intencao.suites) itens.push(item("suites", `${intencao.suites} suítes`));
   if (intencao.vagas) itens.push(item("vagas", `${intencao.vagas} vagas`));
-  if (intencao.areaMin) itens.push(item("area", `Imóvel espaçoso, a partir de ${intencao.areaMin} m²`));
+  if (intencao.espacoso) itens.push(item("espacoso", "Imóvel espaçoso"));
+  if (intencao.areaMin) itens.push(item("areaMin", `Área mínima de ${intencao.areaMin} m²`));
   if (intencao.pronto) itens.push(item("entrega", "Pronto para morar"));
   if (intencao.uso) {
     itens.push(item("uso", intencao.uso === "moradia" ? "Para morar" : "Para investir"));

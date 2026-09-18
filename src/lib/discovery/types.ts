@@ -10,10 +10,37 @@ export type DemandaId = string;
 export type ImovelId = string;
 export type MatchId = string;
 
-/** De onde a informação do imóvel veio. */
+/** Quem anunciou — nunca presumimos que seja o proprietário. */
+export type TipoAnunciante =
+  | "proprietario"
+  | "corretor"
+  | "imobiliaria"
+  | "construtora"
+  | "portal"
+  | "outro"
+  | "desconhecido";
+
+/**
+ * ORIGEM do anúncio. Só preenchemos o que pode ser identificado com
+ * confiança; o restante permanece ausente e aparece como "Não informado".
+ * Fonte do anúncio, responsável e proprietário são coisas distintas.
+ */
 export type Origem = {
   tipo: "anunciante" | "portal" | "demonstracao";
   nome: string;
+  anuncianteId?: string;
+  fonte?: string;
+  urlOriginal?: string;
+  idNaFonte?: string;
+  anunciante?: string;
+  tipoAnunciante?: TipoAnunciante;
+  imobiliaria?: string;
+  construtora?: string;
+  corretorResponsavel?: string;
+  proprietario?: string;
+  contatoDoAnunciante?: string;
+  dataDaColeta?: string;
+  dataDaAtualizacao?: string;
 };
 
 /** Camada de confiança da informação. */
@@ -41,7 +68,12 @@ export interface Intencao {
   orcamentoMax?: number;
   /** Uso pretendido, quando a pessoa deixa isso claro em palavras. */
   uso?: "moradia" | "investimento";
-  /** Área mínima interpretada de expressões como "bastante espaço". */
+  /**
+   * Preferência subjetiva de espaço ("bastante espaço", "amplo").
+   * Preferência, nunca metragem: não vira número na apresentação.
+   */
+  espacoso?: boolean;
+  /** Área mínima APENAS quando a pessoa informa a metragem. */
   areaMin?: number;
   /** Chaves que vieram de interpretação de sentido, não de menção literal. */
   inferidos?: string[];
