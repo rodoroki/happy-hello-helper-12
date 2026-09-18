@@ -73,7 +73,7 @@ export function PropertyCard({ match, consulta }: { match: Match; consulta: stri
 
           {divergencias.length > 0 ? (
             <div className="mt-5 border-t border-border/70 pt-4">
-              <p className="text-sm text-foreground">{tituloDivergencias(divergencias.length)}</p>
+              <p className="text-sm text-foreground">{TITULO_DIVERGENCIAS}</p>
               <ul className="mt-2 space-y-2">
                 {divergencias.map((criterio) => (
                   <CriterioLinha key={criterio.chave} criterio={criterio} />
