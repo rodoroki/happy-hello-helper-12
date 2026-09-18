@@ -1,8 +1,10 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { useState } from "react";
 
 import { ConfiancaTag, CriterioLinha } from "@/components/discovery/CriterioTag";
 import { SiteFooter, SiteHeader } from "@/components/discovery/SiteHeader";
 import { buscarImovel } from "@/lib/discovery/imoveis";
+import { registrarInteresse } from "@/lib/discovery/interesse";
 import { formatarPrecoCheio, interpretarIntencao } from "@/lib/discovery/interpret";
 import { matchDoImovel } from "@/lib/discovery/match";
 
@@ -44,6 +46,7 @@ export const Route = createFileRoute("/imovel/$imovelId")({
 function PaginaImovel() {
   const { imovel } = Route.useLoaderData();
   const { q } = Route.useSearch();
+  const [contatoAberto, setContatoAberto] = useState(false);
   const match = q ? matchDoImovel(interpretarIntencao(q), imovel) : null;
 
   return (
