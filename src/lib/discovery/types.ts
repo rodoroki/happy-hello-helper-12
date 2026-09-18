@@ -68,7 +68,12 @@ export interface Intencao {
   orcamentoMax?: number;
   /** Uso pretendido, quando a pessoa deixa isso claro em palavras. */
   uso?: "moradia" | "investimento";
-  /** Área mínima interpretada de expressões como "bastante espaço". */
+  /**
+   * Preferência subjetiva de espaço ("bastante espaço", "amplo").
+   * Preferência, nunca metragem: não vira número na apresentação.
+   */
+  espacoso?: boolean;
+  /** Área mínima APENAS quando a pessoa informa a metragem. */
   areaMin?: number;
   /** Chaves que vieram de interpretação de sentido, não de menção literal. */
   inferidos?: string[];
