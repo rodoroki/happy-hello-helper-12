@@ -59,8 +59,15 @@ export function interpretarIntencao(texto: string): Intencao {
   const prontoInferido = /(nao precis\w* reformar|sem reforma|nao reformar|reformado|sem obra)/.test(t);
   if (!prontoLiteral && prontoInferido) inferidos.push("entrega");
 
+  /**
+   * Metragem só entra como número quando a pessoa informa o número.
+   * "Bastante espaço" é preferência, não especificação.
+   */
+  const areaDita = t.match(/(\d{2,4})\s*(m2|m²|metros|metros quadrados)/)?.[1];
+  const areaMin = areaDita ? Number(areaDita) : undefined;
+
   const espacoso = /(bastante espaco|muito espaco|espacos\w*|amplo|ampla|bem grande|metragem grande)/.test(t);
-  if (espacoso) inferidos.push("area");
+  if (espacoso) inferidos.push("espacoso");
   if (pertoDoMar) inferidos.push("pertoDoMar");
 
   const uso = /(investi|alugar|locacao|renda|temporada)/.test(t)
@@ -80,7 +87,8 @@ export function interpretarIntencao(texto: string): Intencao {
     ...(suites ? { suites: Number(suites) } : {}),
     ...(vagas ? { vagas: Number(vagas) } : {}),
     ...(prontoLiteral || prontoInferido ? { pronto: true } : {}),
-    ...(espacoso ? { areaMin: 160 } : {}),
+    ...(espacoso ? { espacoso: true } : {}),
+    ...(areaMin !== undefined ? { areaMin } : {}),
     ...(uso ? { uso } : {}),
     ...(orcamentoMax !== undefined ? { orcamentoMax } : {}),
     ...(inferidos.length > 0 ? { inferidos } : {}),
