@@ -3,6 +3,7 @@ import { useState } from "react";
 
 import { ConfiancaTag, CriterioLinha } from "@/components/discovery/CriterioTag";
 import { SiteFooter, SiteHeader } from "@/components/discovery/SiteHeader";
+import { destinoDeContato } from "@/lib/discovery/contato";
 import { buscarImovel } from "@/lib/discovery/imoveis";
 import { registrarInteresse } from "@/lib/discovery/interesse";
 import { formatarPrecoCheio, interpretarIntencao } from "@/lib/discovery/interpret";
@@ -48,6 +49,7 @@ function PaginaImovel() {
   const { q } = Route.useSearch();
   const [contatoAberto, setContatoAberto] = useState(false);
   const match = q ? matchDoImovel(interpretarIntencao(q), imovel) : null;
+  const destino = destinoDeContato(imovel);
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -207,14 +209,37 @@ function PaginaImovel() {
               <button
                 type="button"
                 onClick={() => {
-                  registrarInteresse({
+                  const registroBase = {
                     demandaId: match?.demandaId ?? "dem_sem_busca",
                     imovelId: imovel.id,
                     matchId: match?.matchId ?? null,
                     origem: imovel.origem,
-                    dataHora: new Date().toISOString(),
-                    acao: "falar_sobre_imovel",
                     contextoDaDemanda: q,
+                    ...(match ? { matchScore: match.score } : {}),
+                  };
+                  registrarInteresse({
+                    ...registroBase,
+                    acao: "falar_sobre_imovel",
+                    canal: destino ? destino.canal : null,
+                    contatoDestino: destino ? destino.valor : null,
+                  });
+
+                  if (destino) {
+                    registrarInteresse({
+                      ...registroBase,
+                      acao: "abriu_whatsapp",
+                      canal: destino.canal,
+                      contatoDestino: destino.valor,
+                    });
+                    window.open(destino.url, "_blank", "noopener,noreferrer");
+                    return;
+                  }
+
+                  registrarInteresse({
+                    ...registroBase,
+                    acao: "contato_indisponivel",
+                    canal: null,
+                    contatoDestino: null,
                   });
                   setContatoAberto(true);
                 }}
@@ -222,10 +247,16 @@ function PaginaImovel() {
               >
                 Falar sobre este imóvel
               </button>
-              {contatoAberto ? (
+              {destino ? (
+                <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
+                  A conversa continua no WhatsApp
+                  {destino.responsavel ? `, com ${destino.responsavel}` : ""}.
+                </p>
+              ) : null}
+              {contatoAberto && !destino ? (
                 <p className="fade-in-soft mt-4 text-sm leading-relaxed text-muted-foreground">
-                  Guardamos o contexto da sua busca junto deste imóvel. Nesta versão conceitual
-                  ainda não há canal de atendimento ativo.
+                  Guardamos o contexto da sua busca junto deste imóvel. O contato direto deste
+                  anúncio ainda não está disponível — assim que estiver, a conversa começa aqui.
                 </p>
               ) : null}
             </div>

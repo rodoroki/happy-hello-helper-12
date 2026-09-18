@@ -20,6 +20,16 @@ export type TipoAnunciante =
   | "outro"
   | "desconhecido";
 
+/** Canais previstos; nesta etapa o prioritário é o WhatsApp. */
+export type CanalContato = "whatsapp" | "telefone" | "email" | "site";
+
+/** Contato publicado pelo anúncio. Ausente quando não existe — nunca inventado. */
+export interface ContatoDoAnunciante {
+  canal: CanalContato;
+  valor: string;
+  observacao?: string;
+}
+
 /**
  * ORIGEM do anúncio. Só preenchemos o que pode ser identificado com
  * confiança; o restante permanece ausente e aparece como "Não informado".
@@ -38,7 +48,7 @@ export type Origem = {
   construtora?: string;
   corretorResponsavel?: string;
   proprietario?: string;
-  contatoDoAnunciante?: string;
+  contatoDoAnunciante?: ContatoDoAnunciante;
   dataDaColeta?: string;
   dataDaAtualizacao?: string;
 };
