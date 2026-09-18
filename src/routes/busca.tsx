@@ -247,8 +247,12 @@ function Busca() {
         ) : (
           <section className="mt-16 max-w-2xl border-t border-border pt-10">
             <h2 className="text-2xl leading-snug sm:text-3xl">
-              Ainda não encontramos exatamente o que você descreveu.
+              Não encontramos um imóvel que atenda a todos esses critérios ao mesmo tempo.
             </h2>
+            <p className="mt-5 text-base leading-relaxed text-muted-foreground">
+              Podemos procurar mantendo a localização e flexibilizando apenas um ponto — a
+              decisão é sua.
+            </p>
             {sugestoes.length > 0 ? (
               <>
                 <p className="mt-6 text-eyebrow">Talvez faça sentido flexibilizar</p>
