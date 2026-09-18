@@ -199,12 +199,33 @@ function PaginaImovel() {
               </p>
             </div>
 
-            <button
-              type="button"
-              className="mt-4 w-full rounded-full bg-primary px-5 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-            >
-              Falar sobre este imóvel
-            </button>
+            <div className="mt-4 rounded-2xl border border-border bg-card p-6">
+              <p className="text-base text-foreground">Gostou deste imóvel?</p>
+              <button
+                type="button"
+                onClick={() => {
+                  registrarInteresse({
+                    demandaId: match?.demandaId ?? "dem_sem_busca",
+                    imovelId: imovel.id,
+                    matchId: match?.matchId ?? null,
+                    origem: imovel.origem,
+                    dataHora: new Date().toISOString(),
+                    acao: "falar_sobre_imovel",
+                    contextoDaDemanda: q,
+                  });
+                  setContatoAberto(true);
+                }}
+                className="mt-4 w-full rounded-full bg-primary px-5 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+              >
+                Falar sobre este imóvel
+              </button>
+              {contatoAberto ? (
+                <p className="fade-in-soft mt-4 text-sm leading-relaxed text-muted-foreground">
+                  Guardamos o contexto da sua busca junto deste imóvel. Nesta versão conceitual
+                  ainda não há canal de atendimento ativo.
+                </p>
+              ) : null}
+            </div>
           </aside>
         </div>
       </main>
