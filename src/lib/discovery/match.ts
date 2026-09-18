@@ -64,11 +64,30 @@ function avaliar(imovel: Imovel, intencao: Intencao): CriterioAvaliado[] {
     });
   }
 
+  if (intencao.espacoso) {
+    // Preferência subjetiva: avaliamos em palavras, sem devolver uma exigência
+    // numérica que a pessoa nunca informou.
+    const area = imovel.areaPrivativa;
+    criterios.push({
+      chave: "espacoso",
+      rotulo: "Imóvel espaçoso",
+      status:
+        area === null ? "parcial" : area >= 150 ? "atende" : area >= 120 ? "parcial" : "nao_atende",
+      ...(area === null
+        ? { observacao: "Área não informada" }
+        : area >= 150
+          ? { observacao: `${area} m² privativos` }
+          : {
+              observacao: `${area} m² privativos — pode ser menor do que você imagina por “bastante espaço”`,
+            }),
+    });
+  }
+
   if (intencao.areaMin) {
     const area = imovel.areaPrivativa;
     criterios.push({
-      chave: "area",
-      rotulo: `Imóvel espaçoso, a partir de ${intencao.areaMin} m²`,
+      chave: "areaMin",
+      rotulo: `Área mínima de ${intencao.areaMin} m²`,
       status:
         area === null
           ? "parcial"

@@ -4,11 +4,7 @@ import { CriterioLinha } from "./CriterioTag";
 import { formatarPrecoCheio } from "@/lib/discovery/interpret";
 import type { Match } from "@/lib/discovery/types";
 
-function tituloDivergencias(quantidade: number) {
-  if (quantidade === 1) return "Uma diferença";
-  if (quantidade === 2) return "Duas diferenças";
-  return `${quantidade} diferenças`;
-}
+const TITULO_DIVERGENCIAS = "O que não corresponde exatamente";
 
 export function PropertyCard({ match, consulta }: { match: Match; consulta: string }) {
   const { imovel, criterios, divergencias, exato } = match;
