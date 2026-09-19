@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 
 import { IntentField } from "@/components/discovery/IntentField";
+import { OportunidadesExternas } from "@/components/discovery/OportunidadesExternas";
 import { PropertyCard } from "@/components/discovery/PropertyCard";
 import { SiteFooter, SiteHeader } from "@/components/discovery/SiteHeader";
 import { formatarMoeda, interpretarIntencao, leituraDaIntencao } from "@/lib/discovery/interpret";
@@ -268,6 +269,8 @@ function Busca() {
             ) : null}
           </section>
         )}
+
+        <OportunidadesExternas consulta={q} />
 
         <section className="mt-20 border-t border-border pt-10">
           <p className="text-eyebrow">Continue em palavras</p>
