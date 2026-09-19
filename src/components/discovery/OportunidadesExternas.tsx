@@ -1,7 +1,11 @@
-import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
+import { useEffect, useState } from "react";
 
-import { descobrirNaInternet, type OportunidadeExterna } from "@/lib/discovery/descoberta.functions";
+import {
+  descobrirNaInternet,
+  type OportunidadeExterna,
+  type RespostaDescoberta,
+} from "@/lib/discovery/descoberta.functions";
 import { formatarPrecoCheio } from "@/lib/discovery/interpret";
 
 /**
@@ -110,14 +114,30 @@ function Oportunidade({ item }: { item: OportunidadeExterna }) {
 
 export function OportunidadesExternas({ consulta }: { consulta: string }) {
   const buscar = useServerFn(descobrirNaInternet);
+  const [data, setData] = useState<RespostaDescoberta | null>(null);
+  const [isPending, setPending] = useState(true);
+  const [isError, setError] = useState(false);
 
-  const { data, isPending, isError } = useQuery({
-    queryKey: ["descoberta-externa", consulta],
-    queryFn: () => buscar({ data: { texto: consulta } }),
-    enabled: consulta.trim() !== "",
-    staleTime: 5 * 60 * 1000,
-    retry: false,
-  });
+  useEffect(() => {
+    if (consulta.trim() === "") return;
+    let ativo = true;
+    setPending(true);
+    setError(false);
+    setData(null);
+    buscar({ data: { texto: consulta } })
+      .then((resposta) => {
+        if (ativo) setData(resposta);
+      })
+      .catch(() => {
+        if (ativo) setError(true);
+      })
+      .finally(() => {
+        if (ativo) setPending(false);
+      });
+    return () => {
+      ativo = false;
+    };
+  }, [consulta, buscar]);
 
   if (consulta.trim() === "") return null;
 
